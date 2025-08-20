@@ -1,29 +1,309 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-<title>ข้อมูลนักเรียน</title>
-<base target="_top">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>แฟ้มสะสมผลงานครู – ชื่อครู</title>
+  <meta name="description" content="แฟ้มสะสมผลงานครู เว็บไซต์แสดงประวัติ ผลงาน นวัตกรรม งานวิจัย และหลักฐานประกอบต่าง ๆ" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0f172a;          /* slate-900 */
+      --card: #111827;        /* gray-900 */
+      --muted:#94a3b8;        /* slate-400 */
+      --text:#e5e7eb;         /* gray-200 */
+      --brand:#22d3ee;        /* cyan-400 */
+      --brand-2:#6366f1;      /* indigo-500 */
+      --accent:#10b981;       /* emerald-500 */
+      --chip:#1f2937;         /* gray-800 */
+      --ring: rgba(34,211,238,.35);
+      --shadow: 0 10px 30px -12px rgba(34,211,238,.25);
+      --radius: 18px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#475569; --chip:#f1f5f9; --shadow:0 12px 28px -16px rgba(2,6,23,.12); --ring:rgba(79,70,229,.25);} 
+    }
+    *{box-sizing: border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:"Noto Sans Thai", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(34,211,238,.08), transparent 60%),
+                  radial-gradient(1000px 500px at 110% 10%, rgba(99,102,241,.07), transparent 60%), var(--bg);
+      color:var(--text);
+      line-height:1.65;
+    }
+    a{color:var(--brand)}
+
+    /* Layout */
+    .container{ width:min(1100px, 92%); margin-inline:auto; }
+    .grid{ display:grid; gap:1.2rem }
+    .two{ grid-template-columns: 1fr; }
+    @media(min-width:860px){ .two{ grid-template-columns: 1.3fr .9fr; } }
+
+    header{
+      position:sticky; top:0; z-index:50; backdrop-filter:saturate(160%) blur(8px);
+      background:linear-gradient(180deg, rgba(15,23,42,.75), rgba(15,23,42,.55));
+      border-bottom:1px solid rgba(148,163,184,.2);
+    }
+    .nav{ display:flex; align-items:center; justify-content:space-between; padding:.8rem 0 }
+    .brand{ display:flex; align-items:center; gap:.75rem; font-weight:700; letter-spacing:.5px }
+    .brand .logo{
+      width:40px; height:40px; display:grid; place-items:center; border-radius:12px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); color:white; font-weight:800; box-shadow:var(--shadow)
+    }
+    nav ul{ list-style:none; display:flex; gap:.6rem; padding:0; margin:0; }
+    nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:.55rem .85rem; border-radius:12px }
+    nav a:hover{ background:rgba(148,163,184,.12) }
+
+    /* Mobile menu */
+    #menu-toggle{ display:none }
+    .menu-btn{ display:none }
+    @media(max-width:800px){
+      nav ul{ display:none }
+      .menu-btn{ display:flex; align-items:center; gap:.5rem; background:transparent; border:1px solid rgba(148,163,184,.35); color:var(--text); padding:.45rem .7rem; border-radius:12px }
+      #menu-toggle:checked ~ .dropdown{ display:block }
+      .dropdown{ display:none; position:absolute; left:4%; right:4%; margin-top:.6rem; background:var(--card); border:1px solid rgba(148,163,184,.25); border-radius:16px; padding:.5rem }
+      .dropdown a{ display:block; padding:.7rem .9rem; border-radius:10px }
+      .dropdown a:hover{ background:rgba(148,163,184,.12) }
+    }
+
+    /* Hero */
+    .hero{ padding: 3.5rem 0 2.5rem; }
+    .hero-card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+      border:1px solid rgba(148,163,184,.25); border-radius:calc(var(--radius) + 6px);
+      padding:1.6rem; display:grid; gap:1.5rem; box-shadow:var(--shadow)
+    }
+    .avatar{ width:110px; height:110px; border-radius:22px; overflow:hidden; border:2px solid rgba(34,211,238,.35) }
+    .avatar img{ width:100%; height:100%; object-fit:cover }
+    .hero h1{ font-size:clamp(1.5rem, 2.8vw + 1rem, 2.4rem); margin:.2rem 0 }
+    .subtitle{ color:var(--muted); font-weight:500 }
+    .chips{ display:flex; flex-wrap:wrap; gap:.5rem }
+    .chip{ background:var(--chip); color:var(--text); padding:.4rem .7rem; border-radius:999px; font-size:.9rem; border:1px solid rgba(148,163,184,.25) }
+    .cta{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.2rem }
+    .btn{
+      border:1px solid rgba(148,163,184,.35); background:linear-gradient(135deg, rgba(34,211,238,.12), rgba(99,102,241,.12));
+      color:var(--text); padding:.6rem .9rem; border-radius:12px; text-decoration:none; font-weight:700; display:inline-flex; gap:.55rem; align-items:center
+    }
+    .btn:hover{ outline: 3px solid var(--ring) }
+    .ghost{ background:transparent }
+
+    /* Sections */
+    section{ padding:1.8rem 0 }
+    .section-title{ font-size:1.3rem; font-weight:800; display:flex; align-items:center; gap:.6rem; margin-bottom:1rem }
+    .section-title .dot{ width:10px; height:10px; border-radius:999px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); box-shadow:0 0 0 6px rgba(34,211,238,.15) }
+
+    .card{ background:var(--card); border:1px solid rgba(148,163,184,.25); border-radius:var(--radius); padding:1rem }
+
+    /* About */
+    .about p{ margin:.6rem 0 }
+
+    /* Skills */
+    .skillset{ display:flex; flex-wrap:wrap; gap:.6rem }
+    .skill{ padding:.45rem .7rem; border-radius:999px; background:linear-gradient(135deg, rgba(34,211,238,.14), rgba(99,102,241,.14)); border:1px dashed rgba(148,163,184,.45); font-weight:700 }
+
+    /* Timeline */
+    .timeline{ position:relative; margin-left:.6rem }
+    .timeline::before{ content:""; position:absolute; left:10px; top:0; bottom:0; width:2px; background:linear-gradient(var(--brand), var(--brand-2)) }
+    .tl-item{ position:relative; margin:0 0 1rem 2rem; padding-left:1rem }
+    .tl-item::before{ content:""; position:absolute; left:-18px; top:.35rem; width:14px; height:14px; border-radius:999px; background:var(--bg); border:3px solid var(--brand) }
+    .tl-item h4{ margin:.2rem 0; font-size:1.05rem }
+    .tl-item .meta{ color:var(--muted); font-size:.95rem }
+
+    /* Works */
+    .works{ display:grid; grid-template-columns:repeat(1,1fr); gap:1rem }
+    @media(min-width:680px){ .works{ grid-template-columns:repeat(2,1fr) } }
+    @media(min-width:980px){ .works{ grid-template-columns:repeat(3,1fr) } }
+    .work{ overflow:hidden; padding:0 }
+    .work figure{ aspect-ratio: 4/3; margin:0; overflow:hidden }
+    .work img{ width:100%; height:100%; object-fit:cover; transition: transform .5s ease }
+    .work:hover img{ transform: scale(1.06) }
+    .work .content{ padding: .85rem 1rem 1rem }
+    .tag{ display:inline-block; font-size:.8rem; background:rgba(16,185,129,.12); color:var(--text); border:1px solid rgba(16,185,129,.35); padding:.2rem .55rem; border-radius:999px }
+
+    /* Publications / Downloads */
+    .list{ display:grid; gap:.75rem }
+    .list a{ display:flex; justify-content:space-between; gap:1rem; align-items:center; padding:.85rem 1rem; border-radius:12px; background:var(--chip); border:1px solid rgba(148,163,184,.25); text-decoration:none; color:var(--text) }
+    .list a:hover{ outline:3px solid var(--ring) }
+
+    /* Contact */
+    form{ display:grid; gap:.7rem }
+    input, textarea{ width:100%; padding:.8rem .9rem; border-radius:12px; border:1px solid rgba(148,163,184,.35); background:transparent; color:var(--text); font-family:inherit }
+    textarea{ min-height:120px; resize:vertical }
+    input:focus, textarea:focus{ outline:3px solid var(--ring); border-color:transparent }
+
+    /* Footer */
+    footer{ padding:2rem 0 3rem; color:var(--muted) }
+  </style>
 </head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo">ครู</div>
+        <div>แฟ้มสะสมผลงานครู</div>
+      </div>
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-btn" for="menu-toggle">เมนู ▾</label>
+      <nav>
+        <ul>
+          <li><a href="#about">ประวัติ</a></li>
+          <li><a href="#timeline">ประสบการณ์</a></li>
+          <li><a href="#works">ผลงาน</a></li>
+          <li><a href="#pubs">งานวิจัย/เอกสาร</a></li>
+          <li><a href="#contact">ติดต่อ</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="container dropdown">
+      <a href="#about">ประวัติ</a>
+      <a href="#timeline">ประสบการณ์</a>
+      <a href="#works">ผลงาน</a>
+      <a href="#pubs">งานวิจัย/เอกสาร</a>
+      <a href="#contact">ติดต่อ</a>
+    </div>
+  </header>
 
-<div align="center">
-<iframe src="https://script.google.com/macros/s/AKfycbw0F_tFQvxPeAYOboRq3lp4AOS_dfc2XOyxbCdPkb6LN5Ya_Ad1NwwQRKMsZOa3_pOK_Q/exec" 
+  <main class="container hero">
+    <div class="hero-card grid two">
+      <div class="grid" style="grid-template-columns: auto 1fr; gap:1rem">
+        <div class="avatar"><img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=800&auto=format&fit=crop" alt="รูปโปรไฟล์ครู"/></div>
+        <div>
+          <h1>นาง/นาย <span style="background:linear-gradient(135deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; background-clip:text; color:transparent">ชื่อ–นามสกุล</span></h1>
+          <div class="subtitle">ครูประจำวิชา / กลุ่มสาระการเรียนรู้ … โรงเรียน… จังหวัด…</div>
+          <div class="chips" aria-label="ข้อมูลติดต่อย่อ">
+            <span class="chip">ครู คศ.2</span>
+            <span class="chip">ใบอนุญาตประกอบวิชาชีพครู</span>
+            <span class="chip">ประสบการณ์ 8 ปี</span>
+          </div>
+          <div class="cta">
+            <a class="btn" href="#works">ดูผลงานเด่น</a>
+            <a class="btn ghost" href="#contact">ติดต่อฉัน</a>
+          </div>
+        </div>
+      </div>
+      <div class="card about" id="about">
+        <div class="section-title"><span class="dot"></span><span>ประวัติย่อ</span></div>
+        <p>สรุปคุณลักษณะเด่น แนวทางการสอน วิสัยทัศน์ และความสำเร็จที่ภาคภูมิใจ เช่น “ยึดผู้เรียนเป็นศูนย์กลาง ใช้โครงงานเป็นฐาน (PBL) และเทคโนโลยีดิจิทัลเพื่อยกระดับผลสัมฤทธิ์ทางการเรียน”</p>
+        <div class="skillset" aria-label="ความเชี่ยวชาญ">
+          <span class="skill">STEM & PBL</span>
+          <span class="skill">การจัดการชั้นเรียนเชิงบวก</span>
+          <span class="skill">Google Workspace / Apps Script</span>
+          <span class="skill">สื่อมัลติมีเดีย</span>
+          <span class="skill">วิจัยในชั้นเรียน</span>
+        </div>
+      </div>
+    </div>
 
-style="
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    width: 100%;
-    border: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    z-index: 999999;
-    height: 100%;
-  "></iframe>
+    <section id="timeline">
+      <div class="section-title"><span class="dot"></span><span>ประสบการณ์ทำงาน & การศึกษา</span></div>
+      <div class="card timeline">
+        <div class="tl-item">
+          <h4>ครูผู้สอน วิชาเทคโนโลยี โรงเรียนตัวอย่าง</h4>
+          <div class="meta">พ.ศ. 2562 – ปัจจุบัน | พัฒนาหลักสูตรโครงงาน IoT และห้องเรียนดิจิทัล</div>
+        </div>
+        <div class="tl-item">
+          <h4>ป.โท การบริหารการศึกษา มหาวิทยาลัย…</h4>
+          <div class="meta">พ.ศ. 2560 – 2562 | วิทยานิพนธ์ด้านการใช้สื่อดิจิทัลเพื่อการเรียนรู้</div>
+        </div>
+        <div class="tl-item">
+          <h4>ครูจ้างสอน โรงเรียน…</h4>
+          <div class="meta">พ.ศ. 2558 – 2560 | พัฒนาหลักสูตรฐานสมรรถนะ</div>
+        </div>
+      </div>
+    </section>
 
-<div>
+    <section id="works">
+      <div class="section-title"><span class="dot"></span><span>ผลงานเด่น</span></div>
+      <div class="works">
+        <article class="card work">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" alt="ภาพกิจกรรม/ผลงาน"/>
+          </figure>
+          <div class="content">
+            <div class="tag">นวัตกรรม</div>
+            <h3>ชุดกิจกรรมโครงงาน IoT สำหรับมัธยมต้น</h3>
+            <p>ออกแบบชุดการสอนและเครื่องมือ Arduino + เซ็นเซอร์ พร้อมคู่มือครู-นักเรียน และแบบประเมินผลลัพธ์การเรียนรู้</p>
+            <a class="btn ghost" href="#" target="_blank" rel="noopener">ดูรายละเอียด</a>
+          </div>
+        </article>
+        <article class="card work">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1588072432836-e10032774350?q=80&w=1200&auto=format&fit=crop" alt="ภาพกิจกรรม/ผลงาน"/>
+          </figure>
+          <div class="content">
+            <div class="tag">สื่อการสอน</div>
+            <h3>เว็บแอปบันทึกผลการเรียนรู้ด้วย Google Apps Script</h3>
+            <p>ระบบบันทึกและรายงานผลแบบเรียลไทม์ เชื่อมต่อ Google Sheets/Drive รองรับอุปกรณ์พกพา</p>
+            <a class="btn ghost" href="#" target="_blank" rel="noopener">ตัวอย่างสาธิต</a>
+          </div>
+        </article>
+        <article class="card work">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200&auto=format&fit=crop" alt="ภาพกิจกรรม/ผลงาน"/>
+          </figure>
+          <div class="content">
+            <div class="tag">ชิ้นงานนักเรียน</div>
+            <h3>ประกวดนวัตกรรมวิทยาศาสตร์ ระดับชาติ</h3>
+            <p>ที่ปรึกษาทีมชนะเลิศ รองชนะเลิศอันดับ 1 โครงงาน “ระบบรดน้ำอัตโนมัติอัจฉริยะ”</p>
+            <a class="btn ghost" href="#" target="_blank" rel="noopener">ภาพ/หลักฐาน</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="pubs">
+      <div class="section-title"><span class="dot"></span><span>งานวิจัย/เอกสาร/หลักฐาน</span></div>
+      <div class="grid two">
+        <div class="card">
+          <h3>สิ่งพิมพ์/บทความวิชาการ</h3>
+          <div class="list">
+            <a href="#" target="_blank" rel="noopener"><span>วิจัยในชั้นเรียน: ผลของ PBL ต่อผลสัมฤทธิ์รายวิชาเทคโนโลยี</span><span>PDF</span></a>
+            <a href="#" target="_blank" rel="noopener"><span>แนวปฏิบัติที่ดี (Best Practice) การใช้ห้องเรียนกลับด้าน</span><span>DOCX</span></a>
+            <a href="#" target="_blank" rel="noopener"><span>คู่มือการใช้งานเว็บแอปประเมินผล</span><span>PDF</span></a>
+          </div>
+        </div>
+        <div class="card">
+          <h3>ดาวน์โหลด/ลิงก์สำคัญ</h3>
+          <div class="list">
+            <a href="#" target="_blank" rel="noopener"><span>แผนการจัดการเรียนรู้ รายวิชาวิทยาการคำนวณ</span><span>ไฟล์</span></a>
+            <a href="#" target="_blank" rel="noopener"><span>ตารางสอน ภาคเรียนล่าสุด</span><span>ไฟล์</span></a>
+            <a href="#" target="_blank" rel="noopener"><span>เกียรติบัตร/รางวัล</span><span>คลัง</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-title"><span class="dot"></span><span>ติดต่อ</span></div>
+      <div class="grid two">
+        <div class="card">
+          <p><strong>สถานศึกษา:</strong> โรงเรียนตัวอย่าง จังหวัด…<br>
+             <strong>อีเมล:</strong> yourname@example.ac.th<br>
+             <strong>โทร:</strong> 08x-xxx-xxxx</p>
+          <p>ยินดีแลกเปลี่ยนเรียนรู้ ร่วมพัฒนาหลักสูตร สื่อการสอน และเครื่องมือดิจิทัลในห้องเรียน</p>
+        </div>
+        <div class="card">
+          <form onsubmit="event.preventDefault(); alert('ขอบคุณสำหรับการติดต่อ!'); this.reset();">
+            <label>ชื่อ–สกุล</label>
+            <input type="text" required placeholder="กรอกชื่อของคุณ" />
+            <label>อีเมล</label>
+            <input type="email" required placeholder="your@email.com" />
+            <label>ข้อความ</label>
+            <textarea required placeholder="พิมพ์ข้อความของคุณ"></textarea>
+            <button class="btn" type="submit">ส่งข้อความ</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    สงวนลิขสิทธิ์ © <span id="y"></span> ชื่อครู – แฟ้มสะสมผลงาน | ปรับแต่งเทมเพลตนี้ได้ฟรี
+  </footer>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
